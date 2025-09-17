@@ -3,6 +3,7 @@ import numpy as np
 import cv2
 from scipy.fft import fft2, ifft2, fftshift, ifftshift
 import os,sys
+import subprocess
 
 def angular_spectrum_propagation(hologram, wavelength, distance, dx, dy):
     """
@@ -81,7 +82,8 @@ def calculate_dihm_propagation_kernel(hologram, wavelength, distance_1, distance
 # Example Usage:
 if __name__ == '__main__':
     # Define parameters for a hypothetical hologram
-    hologram = cv2.imread('images/hologram4_resized.png', cv2.IMREAD_GRAYSCALE).astype(np.float32)
+    destination_path_safe = os.path.join(os.path.dirname(os.path.realpath(__file__)), os.path.join('images', 'hologram4_resized.png'))
+    hologram = cv2.imread(destination_path_safe, cv2.IMREAD_GRAYSCALE).astype(np.float32)
     hologram = hologram[:512, :512]  # Ensure it's 512x512 for this example
     nx, ny = 512, 512
     dx, dy = 2e-6, 2e-6  # 5 micrometers pixel pitch
@@ -104,8 +106,12 @@ if __name__ == '__main__':
     
     hologram = np.exp(1j * phase_shift)
     """
-    os.system("mkdir -p recon")
-    os.system("rm -f recon/recon*.png")
+    # os.system("mkdir -p recon")
+    recon_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'recon')
+    # os.makedirs(recon_path, exist_ok=True)
+    # recon_delete_path = os.path.join(recon_path, f'recon*.png')
+    # os.system("rm -f recon/recon*.png")
+    # subprocess.run('del recon_delete_path', shell=True, check=True)
     frameno = 0
     for distance in np.arange(0.08e-3, 0.30e-3, 0.003e-3):
 
@@ -115,10 +121,13 @@ if __name__ == '__main__':
         )
         frameno += 1
         print(f"Distance: {distance*1e3:.3f} mm")
-        cv2.imwrite(f'recon/recon{frameno:05d}.png', np.abs(reconstructed_hologram) / np.max(np.abs(reconstructed_hologram)) * 255)
+        recon_write_path = os.path.join(recon_path, f'recon{frameno:05d}.png')
+        cv2.imwrite(recon_write_path, np.abs(reconstructed_hologram) / np.max(np.abs(reconstructed_hologram)) * 255)
         
     # Print the reconstructed field's shape and some values
     print("Original hologram shape:", hologram.shape)
     print("Reconstructed hologram shape:", reconstructed_hologram.shape)
     print("Magnitude of a central point:", np.abs(reconstructed_hologram[ny//2, nx//2]))
-    os.system("eog recon/")
+    # os.system("eog recon/")
+    # img = Image.open("your_image.jpg")
+    # img.show()

@@ -1,8 +1,12 @@
 #!/usr/bin/env python3
 # Read and transfer data: Load the digital hologram data and transfer it to the GPU as a PyTorch tensor.
 import torch, cv2, numpy as np
+import os
 # Assuming 'hologram_data' is a NumPy array
-hologram_data = cv2.imread('hologram.png', cv2.IMREAD_GRAYSCALE).astype(np.float32)
+destination_path_safe = os.path.join(os.path.dirname(os.path.realpath(__file__)), os.path.join('images', 'hologram4_resized.png'))
+print(destination_path_safe)
+new_image=cv2.resize(destination_path_safe,(512,512))
+hologram_data = cv2.imread(new_image, cv2.IMREAD_GRAYSCALE).astype(np.float32)
 hologram_tensor = torch.from_numpy(hologram_data).cuda()
 # Define reconstruction parameters: Set the physical constants for your optical setup, such as wavelength, pixel size, and propagation distance.
 wavelength = 633e-9
