@@ -4,6 +4,7 @@ import cv2
 from scipy.fft import fft2, ifft2, fftshift, ifftshift
 import os,sys
 import subprocess
+import glob
 
 def angular_spectrum_propagation(hologram, wavelength, distance, dx, dy):
     """
@@ -129,5 +130,5 @@ if __name__ == '__main__':
     print("Reconstructed hologram shape:", reconstructed_hologram.shape)
     print("Magnitude of a central point:", np.abs(reconstructed_hologram[ny//2, nx//2]))
     # os.system("eog recon/")
-    # img = Image.open("your_image.jpg")
-    # img.show()
+    png_files = glob.glob(os.path.join(recon_path, '*.png'))
+    os.startfile(png_files[0])
