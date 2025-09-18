@@ -131,4 +131,16 @@ if __name__ == '__main__':
     print("Magnitude of a central point:", np.abs(reconstructed_hologram[ny//2, nx//2]))
     # os.system("eog recon/")
     png_files = glob.glob(os.path.join(recon_path, '*.png'))
-    os.startfile(png_files[0])
+    # os.startfile(png_files[0])
+    while True:
+        for png_file in png_files:
+            cv2.imshow('Reconstructed Hologram', cv2.imread(png_file))
+            k = cv2.waitKey(10)  # Display each image for 10 ms
+            print(k)
+            if k & 255 == 27:  # Press 'Esc' to exit
+                break
+
+        if k & 255 == 27:
+            break
+    cv2.destroyAllWindows()
+    sys.exit() 
